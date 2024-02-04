@@ -9,6 +9,7 @@ import * as Api from '../apis/Titser';
 import styles from '../assets/styles/components/Main';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { setLocationAction, Location } from '../reducers/locationReducer';
+import { backendIP, backendPort } from '../apis/BackendAdress';
 
 type Props = {
   people: User[];
@@ -28,10 +29,8 @@ const Main = (props: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('length', props.people.length)
       if (props.people.length < 4) {
         if(props.location?.latitude && props.location.longitude){
-          console.log('location')
           const idsRetrieved = props.people.map((el) => el.id);
           const retrieveData = {
             userId: props.user.id,
@@ -139,7 +138,7 @@ const Main = (props: Props) => {
             <>
           <Animated.View style={[styles.card, animatedStyles]} {...panResponder.panHandlers}>
             <Animated.Image
-               source={{ uri: `http://192.168.15.154:3002/images/${props.people[0].photo}` }}
+               source={{ uri: `http://${backendIP}:${backendPort}/images/${props.people[0].photo}` }}
               style={[styles.photo, {opacity: fadeAnim} ]} 
               />
           </Animated.View>

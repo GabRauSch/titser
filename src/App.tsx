@@ -9,7 +9,6 @@ import Store from './store';
 import Location from './helpers/location';
 
 const App = () => {
-  const image = require('./assets/images/uus.jpg'); // Replace with the actual path to your image
   return (
     <Provider store={Store}>
       <Location></Location>

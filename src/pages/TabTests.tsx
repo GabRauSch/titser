@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Header from '../components/Header';
-import Test from '../components/Test';
+// import Test from '../components/Test';
 
 const TabProfileScreen = () => {
     const profilePhoto = require('../assets/images/uus.jpg')
     return (
         <View style={styles.container}>
             <Header />
-            <Test />
+            {/* <Test /> */}
         </View>
     )
 };

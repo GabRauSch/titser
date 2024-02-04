@@ -9,8 +9,6 @@ import TabTest from '../pages/TabTests'
 
 const Tab = createBottomTabNavigator();
 
-
-
 const AppTabs = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -36,7 +34,7 @@ const AppTabs = () => (
         return <Icon name={icon} size={20} color={!focused ? '#fff' : '#3Ea1c6'} />;
       },
     })}
-    
+    initialRouteName="tablikes"
 >
     <Tab.Screen
       name="tabhome" component={TabHomeScreen}

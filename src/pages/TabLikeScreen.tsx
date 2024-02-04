@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import LikesListItem from '../components/LikesListItem';
 import Header from '../components/Header';
+import LikesListItem from '../components/LikeListItems/LikesListItem';
 
 interface Person {
   id: string;
@@ -18,19 +18,21 @@ const LikesPage: React.FC = () => {
       name: 'John Doe',
       age: 28,
       description: 'A software engineer who loves coding.',
-      photo: '../assets/images/uus.jpg',
+      photo: '../../assets/images/uus.jpg',
     },{
       id: '2',
       name: 'John Doe',
       age: 28,
       description: 'A software engineer who loves coding.',
-      photo: '../assets/images/uus.jpg',
+      photo: '../../assets/images/uus.jpg',
+
     },{
       id: '3',
       name: 'John Doe',
       age: 28,
       description: 'A software engineer who loves coding.',
-      photo: '../assets/images/uus.jpg',
+      photo: '../../assets/images/uus.jpg',
+
     },
     // Add more dummy data items
   ];
@@ -43,18 +45,7 @@ const LikesPage: React.FC = () => {
     <>
       <Header />
       <View style={styles.container}>
-        <View style={styles.row}>
-          {data.map((item) => (
-            <LikesListItem
-              key={item.id}
-              name={item.name}
-              age={item.age}
-              description={item.description}
-              photo={item.photo}
-            />
-        ))
-      }
-        </View>
+          <LikesListItem></LikesListItem>
       </View>
     </>
   );
@@ -63,7 +54,6 @@ const LikesPage: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     backgroundColor: 'black',
     color: 'white',
   }, row: {

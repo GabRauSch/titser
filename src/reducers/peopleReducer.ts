@@ -15,7 +15,7 @@ interface Action {
 }
 
 export const retrieveAllAction = (payload: any) => (
-    console.log('caralho'),{
+    {
     type: 'RETRIEVE_ALL',
     payload,
 });
@@ -31,7 +31,6 @@ const initialState: State = {
 const reducer = (state: State = initialState, action: Action): State => {
     switch (action.type) {
         case 'RETRIEVE_ALL':
-            console.log('fuck', action.payload)
             return {
                 ...state,
                 people: [...state.people, ...action.payload]
