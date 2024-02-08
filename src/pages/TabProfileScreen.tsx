@@ -1,19 +1,25 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Header from '../components/Header';
+import { backendIP, backendPort } from '../apis/BackendAdress';
+import { LoggedUser } from '../reducers/userReducer';
+import { Dispatch } from 'redux';
+import { RootState } from '../reducers';
+import { connect } from 'react-redux';
 
-const TabProfileScreen = () => {
-    const profilePhoto = require('../assets/images/uus.jpg')
+interface Props  {
+  user: LoggedUser
+}
+const TabProfileScreen = (props: Props) => {
     return (
         <View style={styles.container}>
             <Header />
             <View style={styles.profileContainer}>
                 <Image
                     style={styles.profileImage}
-                    source={profilePhoto} // Replace with the actual image source
+                    source={{uri: `http://${backendIP}:${backendPort}/images/${props.user.photo}`}}
                 />
-                <Text style={styles.name}>John Doe</Text>
-                <Text style={styles.age}>Age: 30</Text>
+                <Text style={styles.name}>{props.user.customName} - {props.user.age} years old</Text>
             </View>
         </View>
     )
@@ -21,7 +27,7 @@ const TabProfileScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
+    backgroundColor: '#222',
     flex: 1
   },
   profileContainer: {
@@ -29,15 +35,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   profileImage: {
+    backgroundColor: 'black',
     width: 120,
     height: 120,
     borderRadius: 60,
   },
   name: {
     marginTop: 10,
-    color: '#fff',
+    color: '#ccc',
     fontSize: 18,
-    fontWeight: 'bold',
   },
   age: {
     marginTop: 5,
@@ -46,4 +52,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TabProfileScreen;
+const mapStateToProps = (state: RootState) => ({
+  user: state.userReducer.user,
+});
+
+export default connect(mapStateToProps)(TabProfileScreen);

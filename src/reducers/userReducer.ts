@@ -5,9 +5,9 @@ export interface LoggedUser {
     photo: any,
     age: number,
     targetAgeRange: number[],
-    tagetGender: string,
+    targetGender: string,
     targetDistanceRange: number,
-
+    token: string
 }
 
 interface State {
@@ -18,8 +18,18 @@ interface Action {
     payload?: any; 
 }
 
+export const setUserAction = (payload: any)=>({
+    type: 'SET_USER',
+    payload
+})
+
+export const setUserNameAction = (payload: any) => ({
+    type: 'SET_USER_NAME',
+    payload,
+});
+
 const initialState: State = {
-    user: {id:21, customName: 'guest', description: 'null', photo: 'a', age: 0, targetAgeRange: [18, 27], tagetGender: 'female', targetDistanceRange: 300000}
+    user: {id: 0, customName: 'guest', description: 'Make a great description!', photo: 'null', age: 18, targetAgeRange: [], targetGender: 'milfs', targetDistanceRange: 0, token: ''}
 }
 
 const reducer = (state: State = initialState, action: Action): State => {
@@ -29,8 +39,14 @@ const reducer = (state: State = initialState, action: Action): State => {
                 ...state,
                 user: action.payload
             };
+        case 'SET_USER_NAME': 
+            return{
+                ...state,
+                user: {...state.user, customName: action.payload}
+            }
         default:
     }
+
     return state;
 }
 

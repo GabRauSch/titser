@@ -5,10 +5,9 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       padding: 10,
-      borderWidth: 2,
-      borderColor: '#ccc',
-      margin: 10,
-      borderRadius: 15
+      borderWidth: 1,
+      marginTop: 20,
+      borderRadius: 6
     },
     photo: {
       width: 50,
@@ -21,7 +20,7 @@ const styles = StyleSheet.create({
     },
     name: {
       fontSize: 18,
-      fontWeight: 'bold',
+      fontWeight: '700',
       color: '#fff'
     },
     age: {
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
     },
     message: {
       marginTop: 5,
-      color: '#777',
+      color: 'red',
     },
     readButton:{
       height: 10,

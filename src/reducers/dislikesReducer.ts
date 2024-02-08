@@ -2,7 +2,8 @@ export interface Dislike {
     id: number,
     customName: string,
     age: number,
-    photo: string
+    photo: string,
+    interactionResponse: string
 }
 
 interface State {
@@ -26,9 +27,19 @@ const initialState: State = {
 const reducer = (state: State = initialState, action: Action): State => {
     switch (action.type) {
         case 'SET_DISLIKES':
-            return {
-                ...state, dislikes: action.payload
-            };
+            const newLikes = action.payload; 
+            if(newLikes){
+                const uniqueNewLikes = newLikes.filter((like: Dislike) => {
+                    return !state.dislikes.some(existingLike => existingLike.id === like.id);
+                });
+    
+                return {
+                    ...state,
+                    dislikes: [...state.dislikes, ...uniqueNewLikes]
+                };
+            }
+            break;
+
         default:
     }
     return state;

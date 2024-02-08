@@ -18,12 +18,18 @@ type Props = {
 const TabDisliked = (props: Props) => {
   useEffect(() => {
     const fetchData = async () => {
-      const data = await Api.getDislikes(props.user.id);
+      const alreadyRetrievedIds = props.dislikes.map(el=>el.id)
+      const data = await Api.getDislikes(props.user.id, alreadyRetrievedIds);
       if (data) {
         props.setDislikes(data.data);
       }
     };
-    fetchData();
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 4000);
+  
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -46,7 +52,7 @@ const TabDisliked = (props: Props) => {
       ))
     ) : (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyContainerText}>You didn't dislike anyone, what a great peerson!</Text>
+            <Text style={styles.emptyContainerText}>You didn't dislike anyone, what a great person!</Text>
         </View>
     )}
   </ScrollView>

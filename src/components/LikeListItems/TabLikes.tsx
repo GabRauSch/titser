@@ -18,38 +18,44 @@ type Props = {
 const TabLike = (props: Props) => {
   useEffect(() => {
     const fetchData = async () => {
-      const data = await Api.getLikes(props.user.id);
-      if (data) {
+      const alreadyRetrievedIds = props.likes.map(el=>el.id)
+      const data = await Api.getLikes(props.user.id, alreadyRetrievedIds);
+      if (data.data) {
         props.setLikes(data.data);
       }
     };
-    fetchData();
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 4000);
+  
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-    {props.likes?.length > 0 ? (
-      props.likes.map((el, key) => (
-        <View style={styles.likeContainerWrapper} key={key}>
-          <View style={styles.likeContainer}>
-            <Image
-              source={{ uri: `http://${backendIP}:${backendPort}/images/${el.photo}` }}
-              style={styles.likeImage}
-            />
-            <Icon name="heart" size={25} color="#c00" style={styles.icon} />
-            <View style={styles.overlayContainer}>
-              <Text style={styles.likeText}>{el.customName} - </Text>
-              <Text style={styles.likeText}>{el.age}</Text>
+      {props.likes?.length > 0 ? (
+        props.likes.map((el, key) => (
+          <View style={styles.likeContainerWrapper} key={key}>
+            <View style={styles.likeContainer}>
+              <Image
+                source={{ uri: `http://${backendIP}:${backendPort}/images/${el.photo}` }}
+                style={styles.likeImage}
+              />
+              <Icon name="heart" size={25} color="#a0f" style={styles.icon} />
+              <View style={styles.overlayContainer}>
+                <Text style={styles.likeText}>{el.customName} - </Text>
+                <Text style={styles.likeText}>{el.age}</Text>
+              </View>
             </View>
           </View>
-        </View>
-      ))
-    )
-  : (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyContainerText}>You didn't like anyone, CHAD, SIGMA!!!</Text>
-        </View>
-    )}
+        ))
+      )
+    : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyContainerText}>none likes you</Text>
+          </View>
+      )}
     </ScrollView>
   );
 };
@@ -61,15 +67,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    alignItems: 'center'
+    alignItems: 'center',
+    minHeight: '100%'
   },
 
   likeContainerWrapper: {
     borderRadius: 10,
     margin: 10,
     width: 140,
-    borderColor: 'red',
-    borderWidth: 0.5,
+    borderColor:'#a0f',
+    borderWidth: .7, 
     justifyContent: 'center'
   },
 
@@ -82,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   emptyContainerText: {
     color: '#fff',

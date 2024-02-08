@@ -26,9 +26,17 @@ const initialState: State = {
 const reducer = (state: State = initialState, action: Action): State => {
     switch (action.type) {
         case 'SET_LIKES':
-            return {
-                ...state, likes: action.payload
-            };
+            const newLikes = action.payload; 
+            if(newLikes){
+                const uniqueNewLikes = newLikes.filter((like: Like) => {
+                    return !state.likes.some(existingLike => existingLike.id === like.id);
+                });
+    
+                return {
+                    ...state,
+                    likes: [...state.likes, ...uniqueNewLikes]
+                };
+            }
         default:
     }
     return state;

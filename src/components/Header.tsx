@@ -12,14 +12,17 @@ const Header = () => {
               style={{width: 40, height: 40}}
             />
         </View>
+        <Text style={styles.titser}>Titser</Text>
+        {/* 
+        FOR THE FUTURE <-- Don't do this kids
         <View style={styles.iconsContainer}>
           <TouchableOpacity style={styles.iconContainer}>
-            <Icon name="bell" size={24} color="black" />
+            <Icon name="bell" size={22} color="white" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconContainer}>
-            <Icon name="cog" size={24} color="black" />
+            <Icon name="cog" size={22} color="white" />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </SafeAreaView>
   );
@@ -27,7 +30,7 @@ const Header = () => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: '#8Ee1f6',
+    backgroundColor: '#a0f',
   },
   header: {
     flexDirection: 'row',
@@ -35,10 +38,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 30,
   },
+  titser: {
+    padding: 20,
+    fontSize: 20,
+    flex: 1,
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10
+    padding: 10,
+    position: 'absolute'
   },
   logoText: {
     marginLeft: 5,

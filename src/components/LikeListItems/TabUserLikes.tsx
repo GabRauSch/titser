@@ -1,15 +1,12 @@
 import React, { useEffect } from "react";
 import { ScrollView, Image, StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Icon5 from 'react-native-vector-icons/FontAwesome5';
 import * as Api from "../../apis/Titser";
 import { RootState } from "../../reducers";
 import { Dispatch } from "redux";
-import { Like, setLikesAction } from "../../reducers/likesReducer";
 import { User } from "../../reducers/peopleReducer";
-import { backendIP, backendPort } from "../../apis/BackendAdress";
 import { UserLikes, setUserLikesAction } from "../../reducers/userLikesReducer";
+import Card from '../CardUserLikes'
 
 type Props = {
   userLikes: UserLikes[];
@@ -20,94 +17,32 @@ type Props = {
 const TabUserLike = (props: Props) => {
   useEffect(() => {
     const fetchData = async () => {
-      const data = await Api.getUserLikes(props.user.id);
-      if (data) {
-        console.log('o')
+      const alreadyRetrievedIds = props.userLikes.map(el=>el.id)
+      const data = await Api.getUserLikes(props.user.id, alreadyRetrievedIds);
+      if (data.data) {
         props.setUserLikes(data.data);
       }
     };
-    fetchData();
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 4000);
+  
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
     {props.userLikes?.length > 0 ? (
       props.userLikes.map((el, key) => (
-        <View key={key}>
-            {el.interactionResponse == 'like' 
-                ? (
-                    <View style={styles.likeContainerWrapper}>
-                        <View style={styles.likeContainer}>
-                            <Image
-                            source={{ uri: `http://${backendIP}:${backendPort}/images/${el.photo}` }}
-                            style={styles.likeImage}
-                            />
-                            {el.interactionResponse == 'like' 
-                                ? (
-                                <>
-                                    <Icon name="comments" size={35} color="#c0c" style={[styles.icon, {opacity: .6}]} />
-                                    <View style={styles.overlayContainer}>
-                                        <Text style={styles.likeText}>{el.customName} - </Text>
-                                        <Text style={styles.likeText}>{el.age}</Text>
-                                    </View>
-                                </>
-                                ) : (<></>)}
-                        </View>
-                    </View>
-                ) : null
-            }
-  
-            {el.interactionResponse == 'dislike' 
-                ? (
-                    <View style={[styles.likeContainerWrapper,  {opacity: .3}]}>
-                    <View style={styles.likeContainer}>
-                        <Image
-                        source={{ uri: `http://${backendIP}:${backendPort}/images/${el.photo}` }}
-                        style={styles.likeImage}
-                        />
-                        {el.interactionResponse == 'dislike'
-                            ? (
-                            <>
-                                <Icon name="times" size={35} color="#c00" style={styles.icon} />
-                                <View style={styles.overlayContainer}>
-                                    <Text style={styles.likeText}>{el.customName} - </Text>
-                                    <Text style={styles.likeText}>{el.age}</Text>
-                                </View>
-                            </>
-                            ) : (<></>)}
-                    </View>
-                    </View>
-                ) : null
-            }
-
-            {el.interactionResponse == 'none' 
-                ? (
-                    <View style={styles.likeContainerWrapper}>
-                        <View style={styles.likeContainer}>
-                            <Image
-                            source={{ uri: `http://${backendIP}:${backendPort}/images/${el.photo}` }}
-                            style={[styles.likeImage, {opacity: 0.6}]}
-                            />
-                            {el.interactionResponse == 'none'
-                                ? (
-                                <>
-                                <Icon name="question-circle" size={35} color="#fff" style={[styles.icon, {opacity: 0.4}]} />
-                                <View style={styles.overlayContainer}>
-                                    <Text style={styles.likeText}>{el.customName} - </Text>
-                                    <Text style={styles.likeText}>{el.age}</Text>
-                                </View>
-                                </>
-                                ) : (<></>)}
-                        </View>
-                    </View>
-                ) : null
-            }
-        </View>
+          <Card key={key} customName={el.customName} age={el.age} photo={el.photo} interactionResponse={el.interactionResponse} id={el.id} />
       ))
     )
   : (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyContainerText}>You didn't like anyone cause you are always the center of attentions!! You know what? when your mother said she should've thought more seriously about having you, she meant YOU! if it was a more enjoyable person she must probably would love them!</Text>
+            <Text style={styles.emptyContainerText}>You didn't like anyone cause you are always the center of attentions!! 
+            You know what? when your mother said she should really have thought about giving you birth, she meant YOU! 
+            if it was a more enjoyable person she must probably would love them!</Text>
         </View>
     )}
     </ScrollView>
@@ -139,7 +74,7 @@ const styles = StyleSheet.create({
 
   emptyContainer: {
     fontSize: 20,
-    height: '100%',
+    minHeight: '100%',
     alignItems: 'center',
     justifyContent: 'center'
   },
