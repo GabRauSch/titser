@@ -1,12 +1,85 @@
 import axios, { AxiosError } from 'axios';
 import { backendIP, backendPort } from './BackendAdress';
 import { ChatMessage } from '../components/chat/ChatScreen';
+import secureStorage from 'react-native-secure-storage'
+import { useSelector } from 'react-redux';
 import { LoggedUser } from '../reducers/userReducer';
+import { RootState } from '../reducers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
+import * as FileSystem from 'expo-file-system'
+import { UserData } from '../components/confirmation/HandleNextStep';
+
+const isFileUriValid = async (uri: string) => {
+    try {
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      return fileInfo.exists && !fileInfo.isDirectory;
+    } catch (error) {
+      console.error('Error checking file URI:', error);
+      return false;
+    }
+  };
+  const isBlobValid = (blob: any) => {
+    return blob instanceof Blob && blob.size > 0 && blob.type;
+};
+
+const getTokenFromState = async () => {
+    try {
+        const token = await AsyncStorage.getItem('userToken');
+        if(token){
+            return token
+        }
+        return ''
+    } catch (error) {
+        console.error(error)
+        return ''
+    }
+}
+
+
+const callPostFormData = async (url: string, body: { image: string; userId: string }) => {
+    try {
+        const finalUrl = `http://${backendIP}:${backendPort}${url}`;
+        const token = await getTokenFromState();
+        
+        const imageUri = body.image;
+        const fileName = body.image.split('/').pop()!;
+        const extension = fileName.split('.')[1];
+
+        console.log(extension)
+        console.log(imageUri)
+        
+        const formData = new FormData();
+        formData.append('file', JSON.parse(JSON.stringify({
+            name: fileName,
+            uri: imageUri,
+            type: `image/${extension}`
+        }))); 
+        formData.append('userId', body.userId);
+
+        const response = await axios.post(finalUrl, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
 
 const callPostEndpoint = async (url: string, body: object, queries?: string)=>{
     try {
         const finalUrl = `http://${backendIP}:${backendPort}${url}`
-        const response = await axios.post(finalUrl, body);
+        const token = await getTokenFromState();
+        const response = await axios.post(finalUrl, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -22,8 +95,12 @@ const callGetEndpoint = async (url: string, params: string[] | number[], queries
     try {
         const paramsString = params.join('/');
         const finalUrl = `http://${backendIP}:${backendPort}${url}/${paramsString}`
-
-        const response = await axios.get(finalUrl)
+        const token = await getTokenFromState();
+        const response = await axios.get(finalUrl, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return response
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -162,12 +239,34 @@ export const login = async (email: string, password: string)=>{
 }
 export const retrieveUserData = async (userId: number)=>{
     const response = await callGetEndpoint('/user', [userId]);
-        return response
+    return response
 }
 export const checkEmailAvailability = async (email: string)=>{
     const body = {
         email
     }
     const response = await callPostEndpoint('/auth/checkEmailAvailability', body);
+    return response
+}
+
+export const updateUserInfo = async (userId: number, data: UserData)=>{
+    const body= {
+        userId,
+        ...data
+    }
+    const response = await callPutEndpoint('/user',  body)
+    return response
+}
+
+export const updateUserImage = async (userId: number, image: string)=>{
+    const body = {
+        userId: userId.toString(), image
+    }
+    const isValid = await isFileUriValid(image);
+    if(!isValid){
+        console.error('image is invalid');
+        return
+    }
+    const response = await callPostFormData('/user/photo', body)
     return response
 }

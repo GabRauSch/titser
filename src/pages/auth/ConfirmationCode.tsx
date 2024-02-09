@@ -12,7 +12,8 @@ import { Dispatch } from 'redux';
 type RootStackParamList = {
   Register: undefined;
   Login: undefined;
-  ConfirmationCode: undefined
+  ConfirmationCode: undefined,
+  RegisterCompletation: undefined
 };
 
 type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ConfirmationCode'>;
@@ -41,9 +42,9 @@ const ConfirmationCodePage: React.FC<Props> = ({ navigation, user, setUser }) =>
     console.log(user.customName, confirmationCode)
     const confirm = await Api.registerConfirmation(user.customName, confirmationCode)
     if(confirm.status !== 200){
-        return setErrorMessage("Couldn't confirm registration. Ensure code is correctly setted!")
+        return setErrorMessage("Code is incorrect! Verify if you have the more recent code")
     } else {
-        setUser(confirm.data)
+        navigation.navigate('RegisterCompletation')
     }
   };
 

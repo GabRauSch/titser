@@ -7,7 +7,7 @@
     "icon": "./src/assets/images/TITSER.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/splash.png",
+      "image": "./src/assets/images/titserLogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,12 +19,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": ".src/assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./src/assets/images/titserLogo.png",
+        "backgroundColor": "#222"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/titserLogo.png"
     }
   }
 }

@@ -4,6 +4,7 @@ export interface LoggedUser {
     description: string,
     photo: any,
     age: number,
+    gender: string,
     targetAgeRange: number[],
     targetGender: string,
     targetDistanceRange: number,
@@ -29,7 +30,7 @@ export const setUserNameAction = (payload: any) => ({
 });
 
 const initialState: State = {
-    user: {id: 0, customName: 'guest', description: 'Make a great description!', photo: 'null', age: 18, targetAgeRange: [], targetGender: 'milfs', targetDistanceRange: 0, token: ''}
+    user: {id: 0, customName: 'guest', gender: '', description: 'Make a great description!', photo: 'null', age: 18, targetAgeRange: [], targetGender: 'milfs', targetDistanceRange: 0, token: ''}
 }
 
 const reducer = (state: State = initialState, action: Action): State => {

@@ -3,11 +3,13 @@ import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'reac
 import * as Api from '../../apis/Titser';
 import ErrorMessage from '../../components/specials/ErrorMessage';
 import { StackNavigationProp } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Dispatch } from 'redux';
 import { LoggedUser, setUserAction, setUserNameAction } from '../../reducers/userReducer';
 import { connect } from 'react-redux';
 import { RootState } from '../../reducers';
+import { decodeToken } from '../../apis/Token';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 type RootStackParamList = {
   Register: undefined;
@@ -31,11 +33,8 @@ const Login: React.FC<Props> = ({ navigation, setUser }) => {
 
   useEffect(()=>{
     const checkUserState = async ()=>{
-      const storedUserState = await AsyncStorage.getItem('userState');
-      if(storedUserState){
-        const user = await Api.retrieveUserData(JSON.parse(storedUserState).id)
-        setUser(user.data)
-      }
+      // const token = await Api.login(email, password);
+      // await secureStorage.setItem('userToken', token);
     }
     checkUserState();
   }, [])
@@ -45,25 +44,33 @@ const Login: React.FC<Props> = ({ navigation, setUser }) => {
   };
 
   const handleLogin = async () => {
+    console.log('login')
     if (email === '' || password === '') {
+      console.error('no values')
       setErrorMessage('Fill all the fields, stupid!');
       return;
     }
     const loginAttempt = await Api.login(email, password);
-    if(!loginAttempt){
+    const token = loginAttempt.data.token;
+    if(!token){
+      console.error('no token')
       return setErrorMessage('Incorrect credentials')
     }
-    const user = await Api.retrieveUserData(loginAttempt.data.id)
-    
-    setUser(user.data)
-    await AsyncStorage.setItem('userState', JSON.stringify({id: user.data.id, token: user.data.token}));
+    await AsyncStorage.setItem('userToken', token);
+
+    const {id: userId} = decodeToken(token);
+    const userInfo = await Api.retrieveUserData(userId)    
+    if(!userInfo.data){
+      return setErrorMessage('failed to login, try again')
+    } 
+    setUser(userInfo.data)
   };
 
 
   return (
     <View style={styles.container}>
       <Image source={logoImage} style={styles.logo} />
-      <Text style={styles.welcome}>oh, you're already a user? I can stop pretending I care!</Text>
+      <Text style={styles.welcome}>oh, you're already a user? I can stop pretending I care! Make your login and be fast</Text>
       <TextInput
         style={styles.input}
         placeholder="Email, I believe..."

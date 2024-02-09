@@ -5,5 +5,7 @@
     "target": "esnext",
     "module": "esnext",
     "jsx": "react-native",
-  }
+    
+  },
+  "allowSyntheticDefaultImports": true
 }

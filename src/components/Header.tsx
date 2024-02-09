@@ -2,7 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Header = () => {
+type Props = {
+  save?: boolean 
+  handleSave?: ()=>void
+}
+
+const Header = ({save, handleSave}: Props) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
@@ -13,6 +18,9 @@ const Header = () => {
             />
         </View>
         <Text style={styles.titser}>Titser</Text>
+        <TouchableOpacity onPress={()=>{handleSave ? handleSave() : null}}>
+          <Text style={styles.save}>{save ? 'save' : ''}</Text>  
+        </TouchableOpacity>
         {/* 
         FOR THE FUTURE <-- Don't do this kids
         <View style={styles.iconsContainer}>
@@ -38,19 +46,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 30,
   },
+  save:{
+    width: 70,
+    color: '#fff',
+    padding: 15,
+    fontSize: 16
+  },
   titser: {
     padding: 20,
     fontSize: 20,
     flex: 1,
     color: 'white',
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    position: 'absolute'
+    width: 70
   },
   logoText: {
     marginLeft: 5,

@@ -7,6 +7,7 @@ import SuccessMessage from '../../components/specials/SuccessMessage';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { setUserNameAction } from '../../reducers/userReducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   Register: undefined;
@@ -67,6 +68,7 @@ const Register: React.FC<Props> = ({ navigation, setCustomName }) => {
       setErrorMessage("Something wen't wrong with the register")
     } else{
       setCustomName(username)
+      await AsyncStorage.setItem('userToken', registerAttempt.data.token);
       redirectToConfirmationCode()
     }
   };
