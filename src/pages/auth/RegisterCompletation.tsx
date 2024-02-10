@@ -85,8 +85,7 @@ const RegisterCompletion = (props:Props) => {
     }
     
   } 
-  useEffect(() => {
-  }, [date]);
+  
 
 
 const handleStep = ()=>{
@@ -120,7 +119,6 @@ const handleStep = ()=>{
     case 'targetGender':case 'gender': 
         return <Gender currentStep={currentStep} setUserData={setUserData}/>
     case 'confirmData': 
-        console.log('o:', userData.targetAgeRange)
         return (
             <ScrollView>
                 <ConfirmationItem label='Description' value={userData.description} step='description' handleChange={handleChange}/>

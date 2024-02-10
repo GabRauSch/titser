@@ -32,25 +32,29 @@ const TabUserLike = (props: Props) => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-    {props.userLikes?.length > 0 ? (
-      props.userLikes.map((el, key) => (
-          <Card key={key} customName={el.customName} age={el.age} photo={el.photo} interactionResponse={el.interactionResponse} id={el.id} />
-      ))
-    )
-  : (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyContainerText}>You didn't like anyone cause you are always the center of attentions!! 
-            You know what? when your mother said she should really have thought about giving you birth, she meant YOU! 
-            if it was a more enjoyable person she must probably would love them!</Text>
-        </View>
-    )}
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scroll}>
+      {props.userLikes?.length > 0 ? (
+        props.userLikes.map((el, key) => (
+            <Card key={key} customName={el.customName} age={el.age} photo={el.photo} interactionResponse={el.interactionResponse} id={el.id} />
+        ))
+      )
+    : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyContainerText}>You didn't like anyone cause you are always the center of attentions!! 
+              You know what? when your mother said she should really have thought about giving you birth, she meant YOU! 
+              if it was a more enjoyable person she must probably would love them!</Text>
+          </View>
+      )}
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+  },
+  scroll: {
     backgroundColor: '#222',
     display: 'flex',
     flexDirection: 'row',
@@ -58,7 +62,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
   },
-
   likeContainerWrapper: {
     borderRadius: 10,
     margin: 10,

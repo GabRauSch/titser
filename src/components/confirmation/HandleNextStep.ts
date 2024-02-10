@@ -17,6 +17,7 @@ export const handleNextStep = ({currentStep, tasks, userData, setErrorMessage, s
     const userInput = userData[currentStep];
     console.log(userInput)
   
+    
     switch (currentStep) {
       case 'description':
         if (!userInput.trim() || userInput.length > 55) {

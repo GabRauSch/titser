@@ -12,6 +12,7 @@ import { setLocationAction, Location } from '../reducers/locationReducer';
 import { backendIP, backendPort } from '../apis/BackendAdress';
 import Swiper from './Swipper';
 import MessageView from './MessageView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
   people: User[];
@@ -21,7 +22,7 @@ type Props = {
   nextPerson: () => void;
 };
 
-const Main = (props: Props) => {  
+const Main = ({people, user, location, retrieveAll, nextPerson}: Props) => {  
   const [disablePanResponder, setDisablePanResponder] = useState(false);
   const [dislikeButtonColor, setDislikeButtonColor] = useState('white');
   const [likeButtonColor, setLikeButtonColor] = useState('white');
@@ -31,34 +32,35 @@ const Main = (props: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (props.people.length < 4) {
-        if(props.location?.latitude && props.location.longitude){
-          const idsRetrieved = props.people.map((el) => el.id);
+      if (people.length < 4) {
+        if(location?.latitude && location.longitude){
+          console.log(user)
+          const idsRetrieved = people.map((el) => el.id);
           const retrieveData = {
-            userId: props.user.id,
-            ageRange: props.user.targetAgeRange,
+            userId: user.id,
+            ageRange: user.targetAgeRange,
             location: {
-              latitude: props.location.latitude,
-              longitude: props.location.longitude,
+              latitude: location.latitude,
+              longitude: location.longitude,
             },
-            gender: props.user.targetGender,
-            rangeInMeters: props.user.targetDistanceRange,
+            gender: user.targetGender,
+            rangeInMeters: user.targetDistanceRange,
             idsRetrieved,
           }
           const data = await Api.fullRetrieve(retrieveData);
           
           if(data.data.length > 0){
-            props.retrieveAll(data.data);
+            retrieveAll(data.data);
           }
         }
       }
     };
     fetchData()    
-  }, [props.people, props.location]);
+  }, [people, location]);
 
   return (
     <SafeAreaView style={styles.container}>
-        {props.people.length == 0 
+        {people.length == 0 
           ? (<MessageView message={"No users with your requirements, Dom Juan"}/>) 
           : ( <Swiper/>)}
     </SafeAreaView>

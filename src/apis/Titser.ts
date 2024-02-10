@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system'
 import { UserData } from '../components/confirmation/HandleNextStep';
+import { Location } from '../reducers/locationReducer';
+import { decodeToken } from './Token';
 
 const isFileUriValid = async (uri: string) => {
     try {
@@ -115,7 +117,12 @@ const callGetEndpoint = async (url: string, params: string[] | number[], queries
 const callPutEndpoint = async (url: string, body: object, queries?: string)=>{
     try {
         const finalUrl = `http://${backendIP}:${backendPort}${url}`
-        const response = await axios.put(finalUrl, body)
+        const token = await getTokenFromState() 
+        const response = await axios.put(finalUrl, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return response
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -141,7 +148,6 @@ export const getUserByAgeRange = async (ageRange: [number, number])=>{
     return await callGetEndpoint('/users', ageRange)
 }
 export const fullRetrieve = async (body: object)=>{
-    console.log('full retrieve');
     const response = await callPostEndpoint('/users/fullRetrieve', body)
     return response
 }
@@ -249,7 +255,7 @@ export const checkEmailAvailability = async (email: string)=>{
     return response
 }
 
-export const updateUserInfo = async (userId: number, data: UserData)=>{
+export const updateUserInfo = async (userId: number, data: any)=>{
     const body= {
         userId,
         ...data
@@ -268,5 +274,14 @@ export const updateUserImage = async (userId: number, image: string)=>{
         return
     }
     const response = await callPostFormData('/user/photo', body)
+    return response
+}
+
+export const setLocation = async (userId: number, location: Location)=>{
+    const body = {
+        userId,
+        location
+    }
+    const response = await callPutEndpoint('/user/location', body);
     return response
 }

@@ -19,7 +19,7 @@ export default ({currentStep, setUserData}: Props)=>{
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleGenderChange = (gender: string) => {
-        setSelectedGender(gender);
+        setSelectedGender(gender.toLowerCase());
         setModalVisible(false);
         setUserData((prevState: any) => ({
             ...prevState,

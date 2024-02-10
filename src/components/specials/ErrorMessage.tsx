@@ -1,22 +1,29 @@
-import { StyleSheet, Text } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 
 interface Props {
     text: string
 }
-const ErrorMessage = (props: Props)=>{
+const ErrorMessage = ({text}: Props)=>{
     return (
-        <Text style={styles.errorText}>{props.text}</Text>
+        <View style={styles.errorMessage}>
+          <Text style={styles.errorText}>{text}</Text>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
+  errorMessage: {
+    position: 'absolute',
+    top: 60,
+    width: '100%',
+    padding: 10
+  },
   errorText: {
     padding: 20,
     borderRadius: 10,
-    position: 'absolute',
     backgroundColor: 'rgba(140, 0, 0, .5)',
     color: 'white',
-    top: 60,
+    
   },
 })
 

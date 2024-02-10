@@ -52,24 +52,29 @@ const Swipper = (props: Props) => {
       }).start();
   }, [props.people])
 
+  const likeUser = async ()=>{
+    props.nextPerson();
+      await Api.like({userIdFrom: props.user.id, userIdTo: props.people[0].id})
+      pan.setValue({ x: 0, y: 0 });
+  }
+  const dislikeUser = async ()=>{
+    props.nextPerson();
+    await Api.dislike({userIdFrom: props.user.id, userIdTo: props.people[0].id})
+    pan.setValue({ x: 0, y: 0 });
+  }
   const handleSwipe = useCallback(
     async (gestureState: any) => {
       if (gestureState.dx > 150) {
         fadeAnim.setValue(0);
         setDisablePanResponder(true)
         if (props.people.length > 0) {
-          props.nextPerson();
-          await Api.like({userIdFrom: props.user.id, userIdTo: props.people[0].id})
-          pan.setValue({ x: 0, y: 0 });
-        } else{
+          likeUser()
         }
       } else if (gestureState.dx < -150) {
         fadeAnim.setValue(0);
         setDisablePanResponder(true)
         if (props.people.length > 0) {
-          props.nextPerson();
-          await Api.dislike({userIdFrom: props.user.id, userIdTo: props.people[0].id})
-          pan.setValue({ x: 0, y: 0 });
+          dislikeUser()
         } else{
         }
       }
@@ -140,7 +145,7 @@ const Swipper = (props: Props) => {
               <TouchableOpacity style={[styles.actionButton, { backgroundColor: dislikeButtonColor }]}>
                 <Icon name="times" size={25} color={iconDislikeColor} />
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionButton, { backgroundColor: likeButtonColor }]}>
+              <TouchableOpacity style={[styles.actionButton, { backgroundColor: likeButtonColor }]} onPress={likeUser}>
                 <Icon name="heart" size={25} color={iconLikeColor} />
               </TouchableOpacity>
             </View>

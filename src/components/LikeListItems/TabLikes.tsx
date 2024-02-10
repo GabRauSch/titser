@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { ScrollView, Image, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ScrollView, Image, StyleSheet, Text, View, TouchableOpacity, Touchable, TouchableHighlight } from "react-native";
 import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Api from "../../apis/Titser";
@@ -8,6 +8,7 @@ import { Dispatch } from "redux";
 import { Like, setLikesAction } from "../../reducers/likesReducer";
 import { User } from "../../reducers/peopleReducer";
 import { backendIP, backendPort } from "../../apis/BackendAdress";
+import Swipper from "../Swipper";
 
 type Props = {
   likes: Like[];
@@ -16,6 +17,8 @@ type Props = {
 };
 
 const TabLike = (props: Props) => {
+  const [maximized, setMaximized] = useState(false);
+  
   useEffect(() => {
     const fetchData = async () => {
       const alreadyRetrievedIds = props.likes.map(el=>el.id)
@@ -32,31 +35,48 @@ const TabLike = (props: Props) => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const likeUser = async (userId: number)=>{
+      await Api.like({userIdFrom: props.user.id, userIdTo: userId})
+  }
+
+  const dislikeUser = async (userId: number)=>{
+    await Api.dislike({userIdFrom: props.user.id, userIdTo: userId})
+  }
+
+  const handleMaximize = () => {
+    setMaximized(!maximized);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {props.likes?.length > 0 ? (
-        props.likes.map((el, key) => (
-          <View style={styles.likeContainerWrapper} key={key}>
-            <View style={styles.likeContainer}>
-              <Image
-                source={{ uri: `http://${backendIP}:${backendPort}/images/${el.photo}` }}
-                style={styles.likeImage}
-              />
-              <Icon name="heart" size={25} color="#a0f" style={styles.icon} />
-              <View style={styles.overlayContainer}>
-                <Text style={styles.likeText}>{el.customName} - </Text>
-                <Text style={styles.likeText}>{el.age}</Text>
-              </View>
+    {props.likes?.length > 0 ? (
+      props.likes.map((el, key) => (
+        <TouchableHighlight style={styles.likeContainerWrapper} key={key} onPress={handleMaximize}>
+          <View style={[styles.likeContainer, { height: maximized ? 200 : 100 }]}>
+            <Image
+              source={{ uri: `http://${backendIP}:${backendPort}/images/${el.photo}` }}
+              style={styles.likeImage}
+            />
+            <TouchableOpacity style={[styles.dislikeButton]} onPress={() => { likeUser(el.id) }}>
+              <Icon name="times" size={35} color="red" />
+            </TouchableOpacity>
+            <View style={styles.overlayContainer}>
+              <Text style={styles.likeText}>{el.customName} - </Text>
+              <Text style={styles.likeText}>{el.age}</Text>
             </View>
+
+            <TouchableOpacity style={[styles.actionButton]} onPress={() => { likeUser(el.id) }}>
+              <Icon name="heart" size={35} color="green" />
+            </TouchableOpacity>
           </View>
-        ))
-      )
-    : (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyContainerText}>none likes you</Text>
-          </View>
-      )}
-    </ScrollView>
+        </TouchableHighlight>
+      ))
+    ) : (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyContainerText}>none likes you</Text>
+      </View>
+    )}
+  </ScrollView>
   );
 };
 
@@ -84,7 +104,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
-
+  actionButton: {
+    position: 'absolute',
+    right: 5,
+    top: 2
+  },
+  dislikeButton: {
+    position: 'absolute',
+    left: 5,
+    top: 2
+  },
   emptyContainer: {
     fontSize: 20,
     height: '100%',

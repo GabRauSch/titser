@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import * as Api from '../../apis/Titser';
 import ErrorMessage from '../../components/specials/ErrorMessage';
@@ -6,8 +6,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import SuccessMessage from '../../components/specials/SuccessMessage';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { setUserNameAction } from '../../reducers/userReducer';
+import { LoggedUser, setUserAction, setUserNameAction } from '../../reducers/userReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { decodeToken } from '../../apis/Token';
 
 type RootStackParamList = {
   Register: undefined;
@@ -19,15 +20,33 @@ type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reg
 
 type Props = {
   navigation: RegisterScreenNavigationProp;
-  setCustomName: (payload: string)=>void
+  setCustomName: (payload: string)=>void,
+  setUser: (payload: LoggedUser)=>void
 };
 
-const Register: React.FC<Props> = ({ navigation, setCustomName }) => {
+const Register: React.FC<Props> = ({ navigation, setCustomName, setUser }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const logoImage = require('../../assets/images/titserLogo.png');
+
+  useEffect(() => {
+    const userToken= async ()=>{
+      const token = await AsyncStorage.getItem('userToken');
+      if(!token) return 
+
+      const decodedToken = decodeToken(token);
+      if(decodedToken.id){
+        const userInfo = await Api.retrieveUserData(decodedToken.id);
+        if(!userInfo.data){
+          return setErrorMessage('failed to login, try again')
+        } 
+        setUser(userInfo.data)
+      }
+    }
+    userToken()
+  }, []);
 
   const redirectToLogin = () => {
     navigation.navigate('Login');
@@ -162,7 +181,7 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   setCustomName: (payload: string) => dispatch(setUserNameAction(payload)),
-
+  setUser: (payload: LoggedUser)=> dispatch(setUserAction(payload))
 });
 
 export default connect(null, mapDispatchToProps)(Register);
