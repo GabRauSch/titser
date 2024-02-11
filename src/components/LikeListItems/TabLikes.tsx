@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Image, StyleSheet, Text, View, TouchableOpacity, Touchable, TouchableHighlight } from "react-native";
+import { ScrollView, Image, StyleSheet, Text, View, TouchableOpacity, TouchableHighlight, Modal } from "react-native";
 import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Api from "../../apis/Titser";
@@ -18,21 +18,18 @@ type Props = {
 
 const TabLike = (props: Props) => {
   const [maximized, setMaximized] = useState(false);
-  
+  const [selectedLike, setSelectedLike] = useState<Like | null>(null);
+  const [likes, setLikes] = useState<Like[]>([])
+
   useEffect(() => {
     const fetchData = async () => {
-      const alreadyRetrievedIds = props.likes.map(el=>el.id)
-      const data = await Api.getLikes(props.user.id, alreadyRetrievedIds);
+      const data = await Api.getLikes(props.user.id, [0]);
       if (data.data) {
-        props.setLikes(data.data);
+        setLikes(data.data);
       }
     };
 
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, 4000);
-  
-    return () => clearInterval(intervalId);
+    fetchData();
   }, []);
 
   const likeUser = async (userId: number)=>{
@@ -43,40 +40,69 @@ const TabLike = (props: Props) => {
     await Api.dislike({userIdFrom: props.user.id, userIdTo: userId})
   }
 
-  const handleMaximize = () => {
-    setMaximized(!maximized);
+  const handleMaximize = (like: Like) => {
+    setSelectedLike(like);
+    setMaximized(true);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-    {props.likes?.length > 0 ? (
-      props.likes.map((el, key) => (
-        <TouchableHighlight style={styles.likeContainerWrapper} key={key} onPress={handleMaximize}>
-          <View style={[styles.likeContainer, { height: maximized ? 200 : 100 }]}>
-            <Image
-              source={{ uri: `http://${backendIP}:${backendPort}/images/${el.photo}` }}
-              style={styles.likeImage}
-            />
-            <TouchableOpacity style={[styles.dislikeButton]} onPress={() => { likeUser(el.id) }}>
-              <Icon name="times" size={35} color="red" />
-            </TouchableOpacity>
-            <View style={styles.overlayContainer}>
-              <Text style={styles.likeText}>{el.customName} - </Text>
-              <Text style={styles.likeText}>{el.age}</Text>
-            </View>
+      {likes?.length > 0 ? (
+        likes.map((el, key) => (
+          <TouchableHighlight style={styles.likeContainerWrapper} key={key} onPress={() => handleMaximize(el)}>
+            <View style={[styles.likeContainer]}>
+              <Image
+                source={{ uri: `http://${backendIP}:${backendPort}/images/${el.photo}` }}
+                style={styles.likeImage}
+              />
+              <TouchableOpacity style={[styles.dislikeButton]} onPress={() => { likeUser(el.id) }}>
+                <Icon name="times" size={35} color="red" />
+              </TouchableOpacity>
+              <View style={styles.overlayContainer}>
+                <Text style={styles.likeText}>{el.customName} - </Text>
+                <Text style={styles.likeText}>{el.age}</Text>
+              </View>
 
-            <TouchableOpacity style={[styles.actionButton]} onPress={() => { likeUser(el.id) }}>
-              <Icon name="heart" size={35} color="green" />
-            </TouchableOpacity>
-          </View>
-        </TouchableHighlight>
-      ))
-    ) : (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyContainerText}>none likes you</Text>
-      </View>
-    )}
-  </ScrollView>
+              <TouchableOpacity style={[styles.actionButton]} onPress={() => { likeUser(el.id) }}>
+                <Icon name="heart" size={35} color="#b1c" />
+              </TouchableOpacity>
+            </View>
+          </TouchableHighlight>
+        ))
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyContainerText}>none likes you</Text>
+        </View>
+      )}
+
+      {selectedLike &&
+        <Modal visible={maximized} transparent={true} animationType="slide">
+          <TouchableHighlight style={styles.modalContainer} onPress={()=>{setMaximized(false)}}>
+            <View style={styles.modalContent}>
+              <View>
+                <Image
+                  source={{ uri: `http://${backendIP}:${backendPort}/images/${selectedLike?.photo}` }}
+                  style={styles.modalImage}
+                />
+              </View>
+              <TouchableOpacity style={styles.dislikeButton} onPress={() =>{dislikeUser(selectedLike.id), setMaximized(false)}}>
+                <Icon name="times" size={35} color="red" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionButton} onPress={() => {likeUser(selectedLike.id), setMaximized(false)}}>
+                <Icon name="heart" size={35} color="#b1c" />
+              </TouchableOpacity>
+              <View style={styles.overlayContainer}>
+                <View>
+                  <Text style={[styles.likeText, {fontSize: 20}]}>{selectedLike?.customName} - </Text>
+                  <Text style={[styles.likeText, {fontSize: 12}]}>{selectedLike?.description}</Text>
+                </View>
+                  <Text style={[styles.likeText, {fontSize: 20}]}>{selectedLike?.age} years old</Text>
+              </View>
+            </View>
+          </TouchableHighlight>
+        </Modal>
+      }
+    </ScrollView>
   );
 };
 
@@ -141,7 +167,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     padding: 6,
     justifyContent: 'center',
     flexDirection: 'row',
@@ -151,6 +177,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#fff',
     marginBottom: 8,
+  },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  modalContent: {
+    backgroundColor: '#222',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalImage: {
+    width: 200,
+    height: 300,
+    borderRadius: 10,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
 });
 

@@ -2,7 +2,8 @@ export interface Like {
     id: number,
     customName: string,
     photo: string,
-    age: number
+    age: number,
+    description: string
 }
 
 interface State {

@@ -14,34 +14,32 @@ interface Action {
     payload?: any; 
 }
 
-export const setUserLikesAction = (payload: any) => ({
-    type: 'SET_USER_LIKE',
-    payload,
-});
-
-
 const initialState: State = {
     userLikes: []
 }
-
-const reducer = (state: State = initialState, action: Action): State => {
+export const setUserLikesAction = (payload: any) => ({
+    type: 'SET_USER_LIKES', 
+    payload,
+  });
+  
+  const reducer = (state: State = initialState, action: Action): State => {
     switch (action.type) {
-        case 'SET_USER_LIKE':
-            const newLikes = action.payload; 
-            if(newLikes){
-                const uniqueNewLikes = newLikes.filter((like: UserLikes) => {
-                    return !state.userLikes.some(existingLike => existingLike.id === like.id);
-                });
-    
-                return {
-                    ...state,
-                    userLikes: [...state.userLikes, ...uniqueNewLikes]
-                };
-            }
-
-                default:
+      case 'SET_USER_LIKES':
+        const newLikes = action.payload; 
+        if (newLikes) {
+          const uniqueNewLikes = newLikes.filter((like: UserLikes) => {
+            return !state.userLikes.some(existingLike => existingLike.id === like.id);
+          });
+          const newState = {
+            ...state,
+            userLikes: [...state.userLikes, ...uniqueNewLikes]
+          };
+          console.log(newState);
+          return newState
+        }
+      default:
     }
+    console.log('return states')
     return state;
-}
-
+  }
 export default reducer;

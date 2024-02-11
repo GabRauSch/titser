@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, Image, StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,26 +16,22 @@ type Props = {
 };
 
 const TabDisliked = (props: Props) => {
+  const [dislikes, setDislikes] = useState<Dislike[]>([])
   useEffect(() => {
     const fetchData = async () => {
-      const alreadyRetrievedIds = props.dislikes.map(el=>el.id)
-      const data = await Api.getDislikes(props.user.id, alreadyRetrievedIds);
+      const data = await Api.getDislikes(props.user.id, [0]);
       if (data) {
-        props.setDislikes(data.data);
+        setDislikes(data.data);
       }
     };
-
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, 4000);
   
-    return () => clearInterval(intervalId);
+    fetchData();
   }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-    {props.dislikes?.length > 0 ? (
-      props.dislikes.map((el, key) => (
+    {dislikes?.length > 0 ? (
+      dislikes.map((el, key) => (
         <View style={styles.likeContainerWrapper} key={key}>
           <View style={styles.likeContainer}>
             <Image
