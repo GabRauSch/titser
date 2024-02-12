@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ImageSourcePropType, TouchableOpacity } from 'react-native';
-import styles from '../../assets/styles/components/ChatListItem';
+import styles from '../../assets/styles/components/chat/ChatListItem';
 import { NavigationAction, useNavigation } from '@react-navigation/native';
 import { backendIP, backendPort } from '../../apis/BackendAdress';
 import * as Api from '../../apis/Titser'
