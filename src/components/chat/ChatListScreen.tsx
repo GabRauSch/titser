@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { FlatList, View, StyleSheet, Text } from "react-native";
 import Header from "../Header";
-import ChatListItem from "../ChatListItem";
-import MatchListItem from "../MatchListItem";
+import ChatListItem from "./ChatListItem";
+import MatchListItem from "./MatchListItem";
 import * as Api from "../../apis/Titser";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -13,6 +13,7 @@ import { Chat } from '../../reducers/chatsReducer';
 import { Match, setMatchesAction } from "../../reducers/matchesReducer";
 import { io, Socket } from "socket.io-client";
 import { backendIP, chatServicePort } from "../../apis/BackendAdress";
+import { styles } from "../../assets/styles/components/chat/ChatListScreen";
 
 interface ChatListScreenProps {
   user: LoggedUser;
@@ -98,26 +99,6 @@ const ChatListScreen: React.FC<ChatListScreenProps> = (props) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#222",
-  },
-  chatList: {
-    flex: 1,
-    color: "#fff",
-  },
-  matchesList: {
-    maxHeight: 180,
-    color: "#fff",
-  },
-  matchesTitle: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center'
-  }
-});
 
 const mapStateToProps = (state: RootState) => ({
   user: state.userReducer.user,

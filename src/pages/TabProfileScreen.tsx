@@ -10,6 +10,7 @@ import ProfileField from '../components/ProfileField';
 import * as Api from '../apis/Titser'
 import { ValidateInput } from '../components/confirmation/InputValidation';
 import ErrorMessage from '../components/specials/ErrorMessage';
+import { styles } from '../assets/styles/pages/TabProfileScreen';
 
 export type Profile = {
   description: string,
@@ -76,7 +77,7 @@ const TabProfileScreen = ({user, setUser}: Props) => {
                 />
                 <Text style={styles.name}>{user.customName} - {user.age} years old</Text>
             </View>
-            <ScrollView style={styles.userData}>
+            <ScrollView>
               <ProfileField label="Your Description" userKey='description' handleInputChange={handleInputChange}/>
               <ProfileField label="Your Gender" userKey='gender' handleInputChange={handleInputChange}/>
               <ProfileField label="Matches Age" userKey='targetAgeRange' handleInputChange={handleInputChange}/>
@@ -87,37 +88,6 @@ const TabProfileScreen = ({user, setUser}: Props) => {
         </View>
     )
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#222',
-    flex: 1
-  },
-  userData: {
-
-  },
-  profileContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  profileImage: {
-    backgroundColor: 'black',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-  },
-  name: {
-    marginTop: 10,
-    color: '#ccc',
-    fontSize: 18,
-  },
-  age: {
-    marginTop: 5,
-    fontSize: 16,
-    color: '#888',
-  },
-});
-
 const mapStateToProps = (state: RootState) => ({
   user: state.userReducer.user,
 });

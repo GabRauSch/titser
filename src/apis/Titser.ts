@@ -1,16 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import { backendIP, backendPort } from './BackendAdress';
-import { ChatMessage } from '../components/chat/ChatScreen';
-import secureStorage from 'react-native-secure-storage'
-import { useSelector } from 'react-redux';
-import { LoggedUser } from '../reducers/userReducer';
-import { RootState } from '../reducers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system'
-import { UserData } from '../components/confirmation/HandleNextStep';
 import { Location } from '../reducers/locationReducer';
-import { decodeToken } from './Token';
 
 const isFileUriValid = async (uri: string) => {
     try {
@@ -20,9 +12,6 @@ const isFileUriValid = async (uri: string) => {
       console.error('Error checking file URI:', error);
       return false;
     }
-  };
-  const isBlobValid = (blob: any) => {
-    return blob instanceof Blob && blob.size > 0 && blob.type;
 };
 
 const getTokenFromState = async () => {

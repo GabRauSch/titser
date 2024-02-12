@@ -1,7 +1,7 @@
 import Main from "../components/Main"
 import { FlatList, StyleSheet, Text, View } from "react-native"
 import Header from "../components/Header"
-import ChatListItem from "../components/ChatListItem"
+import ChatListItem from "../components/chat/ChatListItem"
 import { createStackNavigator } from "@react-navigation/stack";
 import ChatListScreen from "../components/chat/ChatListScreen";
 import ChatScreen from "../components/chat/ChatScreen";

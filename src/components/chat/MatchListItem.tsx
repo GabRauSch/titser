@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ImageSourcePropType, TouchableOpacity } from 'react-native';
-import styles from '../assets/styles/components/MatchListItem';
+import styles from '../../assets/styles/components/chat/MatchListItem';
 import { NavigationAction, useNavigation } from '@react-navigation/native';
-import { backendIP, backendPort } from '../apis/BackendAdress';
+import { backendIP, backendPort } from '../../apis/BackendAdress';
 
 
 type Props = {

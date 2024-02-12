@@ -5,7 +5,6 @@ import TabHomeScreen from '../pages/TabHomeScreen';
 import TabLikeScreen from '../pages/TabLikeScreen';
 import TabChatScreen from "../pages/TabChatScreen";
 import TabProfileScreen from '../pages/TabProfileScreen'
-import TabTest from '../pages/TabTests'
 import { Text } from "react-native";
 import * as location from 'expo-location'
 import { Dispatch } from "redux";
@@ -84,10 +83,6 @@ const AppTabs = ({setLocation, user}: Props) => {
         name="tabuser" component={TabProfileScreen} 
             options={{ tabBarShowLabel: false, tabBarStyle: {backgroundColor: 'black', borderTopColor: 'black'}, headerShown: false}}
     />
-    {/* <Tab.Screen 
-        name="tabtest" component={TabTest}
-          options={{tabBarShowLabel: false, tabBarStyle: {backgroundColor: 'black', borderTopColor: 'black'}, headerShown: false}}
-    /> */}
   </Tab.Navigator>
   )
 }

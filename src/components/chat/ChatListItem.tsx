@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ImageSourcePropType, TouchableOpacity } from 'react-native';
-import styles from '../assets/styles/components/ChatListItem';
+import styles from '../../assets/styles/components/ChatListItem';
 import { NavigationAction, useNavigation } from '@react-navigation/native';
-import { backendIP, backendPort } from '../apis/BackendAdress';
-import * as Api from '../apis/Titser'
-import { RootState } from '../reducers';
+import { backendIP, backendPort } from '../../apis/BackendAdress';
+import * as Api from '../../apis/Titser'
+import { RootState } from '../../reducers';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { LoggedUser } from '../reducers/userReducer';
-import { readMessagesAction } from '../reducers/chatsReducer';
+import { LoggedUser } from '../../reducers/userReducer';
+import { readMessagesAction } from '../../reducers/chatsReducer';
 
 type Props = {
     name: string,
